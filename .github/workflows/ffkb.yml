@@ -9,8 +9,6 @@ on:
 jobs:
   gather-keyboards:
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
     - uses: actions/checkout@v3
     - id: set-matrix
@@ -24,7 +22,6 @@ jobs:
     container: qmkfm/qmk_cli
     strategy:
       fail-fast: false
-      matrix: ${{fromJson(needs.gather-keyboards.outputs.matrix)}}
     steps:
     - name: Checkout QMK
       uses: actions/checkout@v3
@@ -38,7 +35,7 @@ jobs:
         chmod +x jq
         mv jq /usr/local/sbin/
 
-        make_command="bin/fp_build.sh -k ffkb/byomcu/v3 -m manna-harbour_miryoku -c stemcell -r"
+        make_command="bin/fp_build.sh -k ffkb/byomcu/v3 -m manna-harbour_miryoku -c stemcell -e \"MIRYOKU_ALPHAS=QWERTY\" -r"
         echo "${make_command}"
         $make_command
 

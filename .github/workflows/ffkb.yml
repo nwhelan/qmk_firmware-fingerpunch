@@ -1,0 +1,53 @@
+name: Build QMK firmware
+on:
+  push:
+    branches:
+      - main
+      - master
+      - 'develop**'
+      - github-actions-build
+jobs:
+  gather-keyboards:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - uses: actions/checkout@v3
+    - id: set-matrix
+      run: |
+          content="{\"keyboard\":[\"fingerpunch/ffkb/byomcu/v3\"]}"
+          echo "::set-output name=matrix::$content"
+
+  Build:
+    needs: gather-keyboards
+    runs-on: ubuntu-latest
+    container: qmkfm/qmk_cli
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.gather-keyboards.outputs.matrix)}}
+    steps:
+    - name: Checkout QMK
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Build firmware
+      shell: bash
+      run: |
+        wget -q https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -O jq
+        chmod +x jq
+        mv jq /usr/local/sbin/
+
+        make_command="bin/fp_build.sh -k fingerpunch/ffkb/byomcu/v3 -e CIRQUE_ENABLE=yes -e FP_EC11=yes -e CONVERT_TO=stemcell -m manna-harbour_miryoku MIRYOKU_ALPHAS=QWERTY -r"
+        echo "${make_command}"
+        $make_command
+
+    - name: Archive firmware
+      uses: actions/upload-artifact@v3
+      continue-on-error: true
+      with:
+        name: qmk_fingerpunch_${{ github.actor }}
+        path: |
+          *.hex
+          *.bin
+          *.uf2

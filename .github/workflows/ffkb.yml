@@ -26,7 +26,7 @@ jobs:
         chmod +x jq
         mv jq /usr/local/sbin/
 
-        make_command="bin/fp_build.sh -k ffkb/byomcu/v3 -m manna-harbour_miryoku -c stemcell -e \"MIRYOKU_ALPHAS=QWERTY\" -r"
+        make_command="bin/fp_build.sh -k ffkb/byomcu/v3 -m manna-harbour_miryoku -e MIRYOKU_ALPHAS=QWERTY -r"
         echo "${make_command}"
         $make_command
 

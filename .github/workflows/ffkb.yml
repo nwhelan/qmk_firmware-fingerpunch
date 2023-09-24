@@ -7,17 +7,8 @@ on:
       - 'develop**'
       - github-actions-build
 jobs:
-  gather-keyboards:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - id: set-matrix
-      run: |
-          content="{\"keyboard\":[\"fingerpunch/ffkb/byomcu/v3\"]}"
-          echo "::set-output name=matrix::$content"
 
   Build:
-    needs: gather-keyboards
     runs-on: ubuntu-latest
     container: qmkfm/qmk_cli
     strategy:

@@ -38,7 +38,7 @@ jobs:
         chmod +x jq
         mv jq /usr/local/sbin/
 
-        make_command="bin/fp_build.sh -k fingerpunch/ffkb/byomcu/v3 -e CIRQUE_ENABLE=yes -e FP_EC11=yes -e CONVERT_TO=stemcell -m manna-harbour_miryoku MIRYOKU_ALPHAS=QWERTY -r"
+        make_command="bin/fp_build.sh -k fingerpunch/ffkb/byomcu/v3 -m manna-harbour_miryoku MIRYOKU_ALPHAS=QWERTY CIRQUE_ENABLE=yes FP_EC11=yes CONVERT_TO=stemcell"
         echo "${make_command}"
         $make_command
 
